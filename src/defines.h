@@ -21,6 +21,10 @@ typedef unsigned long  int  uint32;
 #define ENABLE	 	    0x01u
 #define DISABLE 		    0x00u
 
+#define ONE_BYTE_DEFAULT 0x00u
+#define TWO_BYTES_DEFAULT 0x0000u
+#define FOUR_BYTES_DEFAULT 0x0000u
+
 #if PORT_PRINTS_ENABLED == ENABLE
 #define DDM_DBG(sString)\
     printf((const unsigned char*)sString); \

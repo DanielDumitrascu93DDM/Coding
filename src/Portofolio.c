@@ -161,7 +161,7 @@ static void PORT_l_fvEnableHandlersState( PORT_tenHandlers enHND )
 {
   PORT_tenAPPReturns enReturnCallStuff, enReturnCallDestuff, enReturnCallKlineInitTester, enReturnCallKlineInitECU;
 
-  PORT_tenAPPReturns enReturnCallCANTP, enReturnCallCANMultiClient, enReturnCallCANMultiServer;
+  PORT_tenAPPReturns enReturnCallCANTP, enReturnCallCANMultiClient, enReturnCallCANMultiServer, enReturnCallLINFrame;
 
   switch(enHND)
   {
@@ -248,6 +248,29 @@ static void PORT_l_fvEnableHandlersState( PORT_tenHandlers enHND )
       break;
     }
 
+    case hPORT_nenHandlerLINFrame:
+    {
+
+      DDM_DBG("\r\n Enable LIN Frame.");
+
+      enReturnCallLINFrame = PORT_l_fenControlHandlers(hPORT_nenHandlerLINFrame, hPORT_nenHandlerEnabled);
+      PORT_g_fvDecideTheReturn(enReturnCallLINFrame);
+
+      if( hPORT_nenSuccess == enReturnCallLINFrame )
+      {
+        /* Go into next SM */
+        DDM_DBG("\r\n Enabling SUCCESS.");
+
+        PORT_l_enApplicationStateMachine = hPORT_nenAPPInit;
+      }
+      else
+      {
+        /* Stay here. We did something wrong. */
+      }
+      break;
+    }
+
+
     default: break;
   }
 }
@@ -292,7 +315,9 @@ PORT_tenHandlers PORT_l_fvInputFromUser(void)
   DDM_DBG("\r\n\t 1. CAN Stuffing/Destuffing.");
   DDM_DBG("\r\n\t 2. Kline Fast Init.");
   DDM_DBG("\r\n\t 3. CAN Multiframe.");
-  DDM_DBG("\r\n\t 4. Clear the screen.");
+  DDM_DBG("\r\n\t 4. LIN Frame.");
+
+  DDM_DBG("\r\n\t 5. Clear the screen.");
 
   DDM_DBG("\r\n\n DDM ->");
 
@@ -319,6 +344,12 @@ PORT_tenHandlers PORT_l_fvInputFromUser(void)
     }
 
     case 0x04:
+    {
+      enHandlerSelect = hPORT_nenHandlerLINFrame;
+      break;
+    }
+
+    case 0x05:
     {
       enHandlerSelect = hPMG_nenTotalHandler;
       clrscr();

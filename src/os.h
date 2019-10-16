@@ -15,6 +15,7 @@
 #include "KLINE/Kline_FastInitECU_e.h"
 #include "KLINE/Kline_FastInitTester_e.h"
 
+#include "LIN/LIN_e.h"
 
 typedef void (*PORT_pfStartFunctionType)   (void);
 typedef void (*PORT_pfStopFunctionType)   (void);
@@ -61,6 +62,7 @@ typedef enum
   hPORT_nenHandlerCANTP              ,
   hPORT_nenHandlerCANMultiFrameClient,
   hPORT_nenHandlerCANMultiFrameServer,
+  hPORT_nenHandlerLINFrame,
 
   hPMG_nenTotalHandler
 
@@ -71,11 +73,13 @@ static PORT_tstModuleCallBacksHook PORT_stModuleCallBacksHook [] =
  /**start function*/                            /**stop function*/                      /**handler function*/                     /** State of handler: enabled/disabled*/
  {&PORT_g_fvCANStuffingInit,                    &PORT_g_fvCANStuffingSTOP,           &PORT_g_fvCANStuffingHandler,                hPORT_nenHandlerDisabled },
  {&PORT_g_fvCANDestuffingInit,                  &PORT_g_fvCANDestuffingStop,         &PORT_g_fvCANDestuffingHandler,              hPORT_nenHandlerDisabled },
- {&PORT_g_fvKlineTesterInit,                    PORT_g_fvKlineTesterStop,            &PORT_g_fvKlineTesterHandler,                hPORT_nenHandlerDisabled },
- {&PORT_g_fvKlineECUInit,                       PORT_g_fvKlineECUStop,               &PORT_g_fvKlineECUHandler,                   hPORT_nenHandlerDisabled },
- {&PORT_g_fvCANTPInit,                          PORT_g_fvCANTPStop,                  &PORT_g_fvCANTPHandler,                      hPORT_nenHandlerDisabled },
- {&PORT_g_fvCANMultiFrameClientInit,            PORT_g_fvCANMultiFrameClientStop,    &PORT_g_fvCANMultiFrameClientHandler,        hPORT_nenHandlerDisabled },
- {&PORT_g_fvCANMultiFrameServerInit,            PORT_g_fvCANMultiFrameServerStop,    &PORT_g_fvCANMultiFrameServerHandler,        hPORT_nenHandlerDisabled },
+ {&PORT_g_fvKlineTesterInit,                    &PORT_g_fvKlineTesterStop,           &PORT_g_fvKlineTesterHandler,                hPORT_nenHandlerDisabled },
+ {&PORT_g_fvKlineECUInit,                       &PORT_g_fvKlineECUStop,              &PORT_g_fvKlineECUHandler,                   hPORT_nenHandlerDisabled },
+ {&PORT_g_fvCANTPInit,                          &PORT_g_fvCANTPStop,                 &PORT_g_fvCANTPHandler,                      hPORT_nenHandlerDisabled },
+ {&PORT_g_fvCANMultiFrameClientInit,            &PORT_g_fvCANMultiFrameClientStop,   &PORT_g_fvCANMultiFrameClientHandler,        hPORT_nenHandlerDisabled },
+ {&PORT_g_fvCANMultiFrameServerInit,            &PORT_g_fvCANMultiFrameServerStop,   &PORT_g_fvCANMultiFrameServerHandler,        hPORT_nenHandlerDisabled },
+ {&PORT_g_fvLINInit,            				&PORT_g_fvLINStop,    			 	 &PORT_g_fvLINHandler,        				  hPORT_nenHandlerDisabled },
+
 };
 
 PORT_tenApplicationSM PORT_l_enApplicationStateMachine = hPORT_nenAPPEnableHandlers;
